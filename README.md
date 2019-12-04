@@ -30,3 +30,27 @@ Because Mautic sometimes has issues that you may need PRs or custom patches to a
 Of course, not all patches you may need to apply are available on Github, so this image automatically applies any patches found in a subdirectory of the container's `/patch-sets/` directory.  For example, if you mount a directory as `/patch-sets/my-patches`, then any `*.patch` files in that directory will also be applied.
 
 Applied patches are copied to `/applied-patches`, and are not reapplied unless the container is recreated or the patch files' contents change.  (Note that changing a patch may result in the patch not being able to be applied, unless you first un-apply the old patch or recreate the container.)
+
+
+### Manual build
+```
+https://github.com/T-PWK/flake-idgen//master
+
+#mautic build
+export MAUTIC_VERSION=2.15.3
+export MAUTIC_REPO=https://github.com/mautic/mautic/archive/2.15.3.tar.gz
+
+#custom-build
+export MAUTIC_VERSION=custom-build
+export MAUTIC_REPO=https://github.com/karser/mautic/tarball/custom-build
+
+cd docker
+
+docker build \
+    --build-arg MAUTIC_REPO=${MAUTIC_REPO} \
+    --tag karser/mautic-server:$MAUTIC_VERSION \
+    --tag karser/mautic-server:latest .
+
+docker push karser/mautic-server:$MAUTIC_VERSION
+docker push karser/mautic-server:latest
+```

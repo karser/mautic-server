@@ -2,10 +2,11 @@ FROM dirtsimple/php-server:1.3.8
 RUN EXTRA_APKS=imap-dev EXTRA_EXTS="imap bcmath" install-extras
 
 ENV CODE_BASE /code
+ARG MAUTIC_REPO=https://github.com/mautic/mautic/archive/2.15.1.tar.gz
 
 # Install/build Mautic
 RUN mkdir -p $CODE_BASE/.git/hooks \
-    && wget -O - https://github.com/mautic/mautic/archive/2.15.1.tar.gz | tar zx -C $CODE_BASE --strip-components=1 \
+    && wget -O - $MAUTIC_REPO | tar zx -C $CODE_BASE --strip-components=1 \
     && cd $CODE_BASE && composer install --no-dev \
     && rm -rf $CODE_BASE/translations \
     && chmod -R g-w $CODE_BASE
@@ -36,5 +37,5 @@ COPY tpl/ /tpl/
 COPY scripts/ /usr/bin/
 
 ENV MAUTIC_PRS ""
-ARG BUILD_PRS="7046 7399 7409 7560 7561"
+ARG BUILD_PRS=""
 RUN apply-mautic-prs $BUILD_PRS
